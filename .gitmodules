@@ -1,3 +1,6 @@
 [submodule "emhash"]
 	path = emhash
 	url = https://github.com/ktprime/emhash
+[submodule "robin-hood-hashing"]
+	path = robin-hood-hashing
+	url = https://github.com/martinus/robin-hood-hashing
