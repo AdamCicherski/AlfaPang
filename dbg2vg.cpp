@@ -151,50 +151,81 @@ std::string get_reversed_strand(const std::string_view &s) {
   return out;
 }
 
+template <typename T> struct KmerEqual {
+  std::string &ref_sequence;
+  int k;
+
+  KmerEqual(std::string &seq, int kmerSize) : ref_sequence(seq), k(kmerSize) {}
+
+  bool operator()(const T &pos1, const T &pos2) const {
+    std::string s1;
+    std::string s2;
+    s2 = (pos1 > 0) ? ref_sequence.substr(pos1, k)
+                    : get_reversed_strand(ref_sequence.substr(-pos1, k));
+    s1 = (pos1 > 0) ? ref_sequence.substr(pos1, k)
+                    : get_reversed_strand(ref_sequence.substr(-pos1, k));
+    return s1 == s2;
+  }
+};
+
+template <typename T> struct KmerHash {
+  std::string &ref_sequence;
+  int k;
+
+  KmerHash(std::string &seq, int kmerSize) : ref_sequence(seq), k(kmerSize) {}
+
+  size_t operator()(const T &pos) const {
+    std::string kmer;
+    kmer = (pos > 0) ? ref_sequence.substr(pos, k)
+                     : get_reversed_strand(ref_sequence.substr(-pos, k));
+    return std::hash<std::string>()(kmer);
+  }
+};
+
 template <typename T>
-void hash_sequences(const std::string &sequence, int k, T total_length,
+void hash_sequences(std::string &sequence, int k, T total_length,
                     std::vector<T> &out, T &c) {
   // robin_hood::unordered_flat_map<std::string, T> kmers_dict;
   // emhash8::HashMap<std::string,int, absl::Hash<std::string>> kmers_dict;
-  emhash8::HashMap<std::string, T> kmers_dict;
+  // emhash8::HashMap<std::string, T> kmers_dict;
+  KmerEqual<T> equal(sequence, k);
+  KmerHash<T> hash(sequence, k);
+  std::unordered_map<T, T, KmerHash<T>, KmerEqual<T>> kmers_dict(total_length,
+                                                                 hash, equal);
   c = 1;
   bool dbg = 0;
   for (T i = 0; i < sequence.length() - k; i++) {
-    dbg = 0;
-    // if (i==1813241309){dbg=1; std::cout<<i<<"\t"<<c<<"\t"<<dbg<<"\n";}
     const std::string kmer = sequence.substr(i, k);
-    // if (dbg==1){std::cout<<"tutaj "<<kmer<<"\n";}
     if (kmer.find('$') < k) {
       continue;
     }
-    // if (dbg==1){std::cout<<"dupa";}
     const std::string reversed = get_reversed_strand(kmer);
-    if (dbg == 1) {
-      std::cout << kmer << "\n" << reversed << "\n";
-    }
     if (reversed > kmer) {
-      // if(dbg==1){std::cout<<"branch 1";}
-      auto it = (kmers_dict.find(kmer));
+      // auto it = (kmers_dict.find(kmer));
+      auto it = (kmers_dict.find(i));
       if (it != kmers_dict.end()) {
         out[i] = it->second;
       } else {
-        kmers_dict[kmer] = c;
+        // kmers_dict[kmer] = c;
+        kmers_dict[i] = c;
         out[i] = c;
         c++;
       }
     } else {
-      // if (dbg==1){std::cout<<"Branch 2";}
-      auto it = (kmers_dict.find(reversed));
+      // auto it = (kmers_dict.find(reversed));
+      auto it = (kmers_dict.find(-i));
       if (it != kmers_dict.end()) {
         out[i] = -it->second;
       } else {
-        kmers_dict[reversed] = c;
+        // kmers_dict[reversed] = c;
+        kmers_dict[-i] = -c;
         out[i] = -c;
         c++;
       }
     }
   }
   // kmers_dict.~HashMap();
+  kmers_dict.clear();
   std::cout << "value of c : " << c << std::endl;
 }
 
