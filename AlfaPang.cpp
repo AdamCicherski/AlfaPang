@@ -154,26 +154,20 @@ std::string get_reversed_strand(const std::string_view &s) {
 template <typename T>
 void hash_sequences(const std::string &sequence, int k, T total_length,
                     std::vector<T> &out, T &c) {
-  // robin_hood::unordered_flat_map<std::string, T> kmers_dict;
-  // emhash8::HashMap<std::string,int, absl::Hash<std::string>> kmers_dict;
   emhash8::HashMap<std::string, T> kmers_dict;
   c = 1;
   bool dbg = 0;
   for (T i = 0; i < sequence.length() - k; i++) {
     dbg = 0;
-    // if (i==1813241309){dbg=1; std::cout<<i<<"\t"<<c<<"\t"<<dbg<<"\n";}
     const std::string kmer = sequence.substr(i, k);
-    // if (dbg==1){std::cout<<"tutaj "<<kmer<<"\n";}
     if (kmer.find('$') < k) {
       continue;
     }
-    // if (dbg==1){std::cout<<"dupa";}
     const std::string reversed = get_reversed_strand(kmer);
     if (dbg == 1) {
       std::cout << kmer << "\n" << reversed << "\n";
     }
     if (reversed > kmer) {
-      // if(dbg==1){std::cout<<"branch 1";}
       auto it = (kmers_dict.find(kmer));
       if (it != kmers_dict.end()) {
         out[i] = it->second;
@@ -183,7 +177,6 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
         c++;
       }
     } else {
-      // if (dbg==1){std::cout<<"Branch 2";}
       auto it = (kmers_dict.find(reversed));
       if (it != kmers_dict.end()) {
         out[i] = -it->second;
@@ -194,7 +187,6 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
       }
     }
   }
-  // kmers_dict.~HashMap();
   std::cout << "value of c : " << c << std::endl;
 }
 
@@ -248,7 +240,6 @@ void find_connected_bfs(const std::vector<T1> &data,
           }
         }
       }
-      // s += sequence[j];
       v++;
     }
   }
@@ -399,7 +390,6 @@ void process_block(
     path.push_back(nodes_id[n]);
     x += 1;
   }
-  // std::cout<<"Blok "<<start<<" "<<stop+1-start<<'\n';
 }
 
 template <typename T1, typename T2>
@@ -422,8 +412,6 @@ void collapse_paths(const std::vector<char> &states,
       if (i == start) {
         continue;
       }
-      // std::cout<<1<<std::endl;
-      // std::cout<<start<<std::endl;
       process_block(nodes_id, nodes_labels, path, start, i - 1, x, sequence,
                     transformed);
       start = i;
@@ -514,16 +502,12 @@ int main(int argc, char *argv[]) {
   std::string output_file = argv[2];
   int k = std::stoi(argv[3]);
 
-  // std::string input = "/home/vboxuser/Downloads/ecoli500.fa";
-  // std::string output_file ="ecoli500.gfa";
-  // int k = 19;
 
   // Read .fa file
   std::cout << "Czytam fasta" << std::endl;
   std::vector<std::string> names;
   std::string sequences = read_sequences_from_fasta(input, names);
 
-  // Apply translation table to each sequence
   translate_sequence(sequences);
 
   long total_length = sequences.size();
