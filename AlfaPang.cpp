@@ -189,7 +189,6 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
       }
     }
   }
-  std::cout << "value of c : " << c << std::endl;
 }
 
 template <typename T>
@@ -245,7 +244,6 @@ void find_connected_bfs(const std::vector<T1> &data,
       v++;
     }
   }
-  std::cout << "The value of v is: " << v << std::endl;
 }
 
 char base_hash(std::string s) {
@@ -349,22 +347,20 @@ void get_states(const std::vector<T> &choped, const std::string &sequence,
     }
   }
 
-  for (size_t i = 1; i < states.size();
-       i++) {            // std::cout<<+states[i]<<std::endl;
-    if (states[i] == 49) // Many inputs and Many outputs\n",
+  for (size_t i = 1; i < states.size(); i++) {
+    if (states[i] == 49) // Many in and many out",
     {
       states[i] = 3;
       // std::cout<<i<<std::endl;
-    } else if (states[i] % 7 == 0) // Many outputs\n",
+    } else if (states[i] % 7 == 0) // Many out",
     {
       // std::cout<<i<<std::endl;
       states[i] = 2;
       // std::cout<<2<<std::endl;
-    } else if ((states[i] - 1) / 7 == 6) // Many inputs\n",
+    } else if ((states[i] - 1) / 7 == 6) // Many in",
     {
       states[i] = 1;
-      // std::cout<<i<<std::endl;
-    } else // Non branching\n",
+    } else // Non branching",
     {
       states[i] = 0;
     }
@@ -376,8 +372,7 @@ void process_block(
     robin_hood::unordered_node_map<robin_hood::pair<T2, T2>, T2> &nodes_id,
     std::vector<std::pair<T1, T1>> &nodes_labels, std::vector<T2> &path,
     T1 start, T1 stop, T2 &x, const std::string &sequence,
-    const std::vector<T2> &transformed) { // std::cout<<transformed[start]<<"
-                                          // "<< transformed[stop]<< std::endl;
+    const std::vector<T2> &transformed) {
   robin_hood::pair<T2, T2> n(transformed[start], transformed[stop]);
   robin_hood::pair<T2, T2> m(-n.second, -n.first);
   if (nodes_id.find(n) != nodes_id.end()) {
@@ -386,8 +381,6 @@ void process_block(
     path.push_back(-1 * nodes_id[m]);
   } else {
     nodes_id[n] = x;
-    // std::string label = sequence[start:i+1-start];
-    // nodes_labels.push_back(sequence.substr(start,stop+1-start));
     nodes_labels.push_back({start, stop + 1 - start});
     path.push_back(nodes_id[n]);
     x += 1;
@@ -405,7 +398,7 @@ void collapse_paths(const std::vector<char> &states,
   T1 start = 1;
   T2 x = 1;
   std::vector<T2> path;
-  for (T1 i = 1; i < transformed.size(); i++) { // std::cout<<start<<std::endl;
+  for (T1 i = 1; i < transformed.size(); i++) {
 
     if ((states[abs(transformed[i])] == 1 && transformed[i] > 0) ||
         (states[abs(transformed[i])] == 2 &&
@@ -423,12 +416,12 @@ void collapse_paths(const std::vector<char> &states,
     else if ((states[abs(transformed[i])] == 1 && transformed[i] < 0) ||
              (states[abs(transformed[i])] == 2 &&
               transformed[i] > 0)) // BRANCH ON RIGHT
-    {                              // std::cout<<2<<std::endl;
+    {
       process_block(nodes_id, nodes_labels, path, start, i, x, sequence,
                     transformed);
       start = i + 1;
     } else if (states[abs(transformed[i])] == 3) // DOUBLE SIDE
-    {                                            // std::cout<<3<<std::endl;
+    {
       if (i != start) {
         process_block(nodes_id, nodes_labels, path, start, i - 1, x, sequence,
                       transformed);
@@ -441,7 +434,6 @@ void collapse_paths(const std::vector<char> &states,
     if (transformed[i] == 0) // ADD LAST BLOCK
     {
       if (start < i) {
-        std::cout << "TO: " << i - 1 << std::endl;
 
         process_block(nodes_id, nodes_labels, path, start, i - 1, x, sequence,
                       transformed);
@@ -451,7 +443,6 @@ void collapse_paths(const std::vector<char> &states,
       start = i + 1;
     }
   }
-  std::cout << "Bloki: " << x << std::endl;
 }
 
 template <typename T1, typename T2>
@@ -504,27 +495,26 @@ int main(int argc, char *argv[]) {
   std::string output_file = argv[2];
   int k = std::stoi(argv[3]);
 
-
   // Read .fa file
-  std::cout << "Czytam fasta" << std::endl;
+  std::cout << "Reading fasta" << std::endl;
   std::vector<std::string> names;
   std::string sequences = read_sequences_from_fasta(input, names);
 
   translate_sequence(sequences);
 
   long total_length = sequences.size();
-  std::cout << "total len: " << total_length << "\n";
+  std::cout << "Total length of sequences: " << total_length << "\n";
 
   if (total_length < INT_MAX) {
     int total_length = sequences.size();
-    std::cout << "startuje hashowanie" << std::endl;
+    std::cout << "Hashing k-mers..." << std::endl;
     std::vector<int> kmers_vec(total_length, 0);
     int kmers_number;
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
-    std::cout << "mapuje kmery na sekwencje" << std::endl;
+    std::cout << "Building reversed index..." << std::endl;
     std::vector<std::vector<int>> kmers_pos(kmers_number);
     get_kmers_pos(kmers_vec, kmers_pos);
-    std::cout << "zaczynam bfs" << std::endl;
+    std::cout << "Starting BFS..." << std::endl;
     std::vector<int> choped(total_length, 0);
     int choped_nodes_number = 1;
     find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
@@ -535,7 +525,7 @@ int main(int argc, char *argv[]) {
     }
     kmers_pos.clear();
     std::cout << choped_nodes_number << std::endl;
-    std::cout << "licze states" << std::endl;
+    std::cout << "Compacting unbranching paths..." << std::endl;
     std::vector<char> states(choped_nodes_number, 0);
     get_states(choped, sequences, states);
     std::vector<std::vector<int>> paths;
@@ -543,15 +533,17 @@ int main(int argc, char *argv[]) {
     collapse_paths<int, int>(states, choped, sequences, labels, paths);
     choped.clear();
     states.clear();
+    std::cout << "Writing GFA..." << std::endl;
+
     write_gfa(labels, paths, output_file, sequences, names);
 
   } else {
-    std::cout << "Potrzeba 8 bajtowych int\n";
-    std::cout << "startuje hashowanie" << std::endl;
+    std::cout << "[Info] Using 64 bits ints for k-mers id";
+    std::cout << "Hashing k-mers..." << std::endl;
     std::vector<long> kmers_vec(total_length, 0);
     long kmers_number;
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
-    std::cout << "mapuje kmery na sekwencje" << std::endl;
+    std::cout << "Building reversed index" << std::endl;
     std::vector<std::vector<long>> kmers_pos(kmers_number);
     get_kmers_pos(kmers_vec, kmers_pos);
 
@@ -559,6 +551,7 @@ int main(int argc, char *argv[]) {
       int kmers_number = kmers_number;
       std::vector<int> choped(total_length, 0);
       int choped_nodes_number = 1;
+      std::cout << "Starting BFS..." << std::endl;
       find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
                          choped_nodes_number);
       kmers_vec.clear();
@@ -567,7 +560,7 @@ int main(int argc, char *argv[]) {
       }
       kmers_pos.clear();
       std::cout << choped_nodes_number << std::endl;
-      std::cout << "licze states" << std::endl;
+      std::cout << "Compacting unbranched paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<int>> paths;
@@ -575,10 +568,13 @@ int main(int argc, char *argv[]) {
       collapse_paths<long, int>(states, choped, sequences, labels, paths);
       choped.clear();
       states.clear();
+      std::cout << "Writing GFA..." << std::endl;
+
       write_gfa(labels, paths, output_file, sequences, names);
     } else {
       std::vector<long> choped(total_length, 0);
       long choped_nodes_number = 1;
+      std::cout << "Starting BFS..." << std::endl;
       find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
                          choped_nodes_number);
       kmers_vec.clear();
@@ -587,7 +583,7 @@ int main(int argc, char *argv[]) {
       }
       kmers_pos.clear();
       std::cout << choped_nodes_number << std::endl;
-      std::cout << "licze states" << std::endl;
+      std::cout << "Compacting unbranched paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<long>> paths;
@@ -595,6 +591,8 @@ int main(int argc, char *argv[]) {
       collapse_paths<long, long>(states, choped, sequences, labels, paths);
       choped.clear();
       states.clear();
+      std::cout << "Writing GFA..." << std::endl;
+
       write_gfa(labels, paths, output_file, sequences, names);
     }
   }
