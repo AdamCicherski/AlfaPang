@@ -102,8 +102,10 @@ void translate_sequence(std::string &sequence) {
 
   const std::unordered_map<char, char> translation_table{
       {'H', 'N'}, {'D', 'N'}, {'K', 'N'}, {'M', 'N'}, {'R', 'N'},
-      {'S', 'N'}, {'W', 'N'}, {'Y', 'N'}, {'a', 'A'}, {'c', 'C'},
-      {'t', 'T'}, {'g', 'G'}, {'n', 'N'}};
+      {'S', 'N'}, {'W', 'N'}, {'Y', 'N'}, {'V', 'N'}, {'B', 'N'},
+      {'a', 'A'}, {'c', 'C'}, {'t', 'T'}, {'g', 'G'}, {'n', 'N'},
+      {'h', 'N'}, {'d', 'N'}, {'k', 'N'}, {'m', 'N'}, {'r', 'N'},
+      {'s', 'N'}, {'w', 'N'}, {'y', 'N'}, {'v', 'N'}, {'b', 'N'}};
   for (char &c : sequence) {
     auto it = translation_table.find(c);
     if (it != translation_table.end()) {
@@ -460,7 +462,7 @@ void write_gfa(const std::vector<std::pair<T1, T1>> &labels,
   robin_hood::unordered_set<robin_hood::pair<T2, T2>> edges;
   std::ofstream output;
   output.open(filename);
-  output << "H\n";
+  output << "H\tVN:Z:1.0\n";
   for (size_t i = 0; i < labels.size(); i++) {
     output << "S\t" << i + 1 << "\t"
            << sequence.substr(labels[i].first, labels[i].second) << "\n";
