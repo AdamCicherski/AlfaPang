@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   translate_sequence(sequence);
 
-  using T = long; // Can be changed to int if required
+  using T = int; // Can be changed to int if required
   T total_length = static_cast<T>(sequence.size());
   std::vector<T> kmers_vec(total_length, 0);
 
