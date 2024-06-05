@@ -10,17 +10,12 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
                     std::vector<T> &out, T &c) {
   emhash8::HashMap<std::string, T> kmers_dict;
   c = 1;
-  bool dbg = 0;
   for (T i = 0; i < sequence.length() - k; i++) {
-    dbg = 0;
     const std::string kmer = sequence.substr(i, k);
     if (kmer.find('$') < k) {
       continue;
     }
     const std::string reversed = get_reversed_strand(kmer);
-    if (dbg == 1) {
-      std::cout << kmer << "\n" << reversed << "\n";
-    }
     if (reversed > kmer) {
       auto it = kmers_dict.find(kmer);
       if (it != kmers_dict.end()) {
