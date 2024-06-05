@@ -4,3 +4,9 @@
 [submodule "robin-hood-hashing"]
 	path = externals/robin-hood-hashing
 	url = https://github.com/martinus/robin-hood-hashing
+[submodule "externals/emhash"]
+	path = externals/emhash
+	url = https://github.com/ktprime/emhash
+[submodule "externals/robin-hood-hashing"]
+	path = externals/robin-hood-hashing
+	url = https://github.com/martinus/robin-hood-hashing
