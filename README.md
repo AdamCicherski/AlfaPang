@@ -17,4 +17,4 @@ To run the program, use the following command format:
 ```bash
 ./AlfaPang <input_fasta> <output_gfa> <k>
 ```
-**Note**: The value of <k> must be an odd integer.
+**Note**: The value of k must be an odd integer.
