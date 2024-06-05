@@ -18,10 +18,10 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  std::string input_fasta = argv[1];
-  std::string output_gfa = argv[2];
+  std::string input = argv[1];
+  std::string output_file = argv[2];
   int k = std::stoi(argv[3]);
- // Read .fa file
+  // Read .fa file
   std::cout << "Reading fasta" << std::endl;
   std::vector<std::string> names;
   std::string sequences = read_sequences_from_fasta(input, names);
