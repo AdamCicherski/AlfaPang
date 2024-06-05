@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "robin_hood.h"
+#include "../externals/robin-hood-hashing/src/include/robin_hood.h"
 #include "process_block.hpp"
 template <typename T1, typename T2>
 void collapse_paths(const std::vector<char> &states,

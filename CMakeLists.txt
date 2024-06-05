@@ -19,5 +19,5 @@ add_subdirectory(externals/robin-hood-hashing)
 add_executable(AlfaPang main.cpp)
 
 # Link the libraries
-target_link_libraries(AlfaPang PRIVATE HashDefinitions FastaUtils SequenceUtils Hashing BFS GFAWriter emhash robin-hood-hashing)
+target_link_libraries(AlfaPang PRIVATE HashDefinitions FastaUtils SequenceUtils Hashing BFS GFAWriter)
 

@@ -1,7 +1,7 @@
 #ifndef HASHING_IMPL_HPP
 #define HASHING_IMPL_HPP
 
-#include "externals/emhash/hash_table8.hpp"
+#include "../externals/emhash/hash_table8.hpp"
 #include "sequence_utils.hpp"
 #include <string>
 

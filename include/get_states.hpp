@@ -3,8 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "base_hash.hpp"
-#include "get_reversed_strand.hpp"
+#include "sequence_utils"
 
 template <typename T>
 void get_states(const std::vector<T> &choped, const std::string &sequence,

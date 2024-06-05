@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "robin_hood.h"
+#include "../externals/robin-hood-hashing/src/include/robin_hood.h"
 
 template <typename T1, typename T2>
 void process_block(
