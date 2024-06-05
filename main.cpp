@@ -11,7 +11,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
+#include <climits>
+#include <limits>
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     std::cerr << "Usage: " << argv[0] << " <input_fasta> <output_gfa> <k>\n";
