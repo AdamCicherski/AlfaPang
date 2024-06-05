@@ -1,7 +1,7 @@
 #ifndef HASH_DEFINITIONS_HPP
 #define HASH_DEFINITIONS_HPP
 
-#include "robin-hood-hashing/src/include/robin_hood.h"
+#include "externals/robin-hood-hashing/src/include/robin_hood.h"
 
 namespace robin_hood {
 
