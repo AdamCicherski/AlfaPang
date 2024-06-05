@@ -1,4 +1,4 @@
-#include "fasta_utils.hpp"
+#include "fasta_utils.h"
 #include <fstream>
 
 std::string read_sequences_from_fasta(const std::string &filename, std::vector<std::string> &names) {

@@ -1,4 +1,4 @@
-#include "hash_definitions.hpp"
+#include "hash_definitions.h"
 
 namespace robin_hood {
 

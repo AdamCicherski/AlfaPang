@@ -1,4 +1,4 @@
-#include "sequence_utils.hpp"
+#include "sequence_utils.h"
 #include <algorithm>
 
 void translate_sequence(std::string &sequence) {
