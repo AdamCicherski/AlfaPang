@@ -10,4 +10,3 @@ To install AlfaPang, download the repo, then go to the project root and run foll
     cmake ..  
     cmake --build .  
 
-
