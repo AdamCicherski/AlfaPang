@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "sequence_utils"
+#include "sequence_utils.hpp"
 
 template <typename T>
 void get_states(const std::vector<T> &choped, const std::string &sequence,
