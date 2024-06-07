@@ -5,7 +5,7 @@ AlfaPang constructs variation graphs, leveraging its alignment-free and referenc
 To install AlfaPang, download the repo, then go to the project root and run following commands:
 
 ```bash
-    git submodule update --i --recursive  
+    git submodule update --init --recursive  
     mkdir build  
     cd build  
     cmake ..  
