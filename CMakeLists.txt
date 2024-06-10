@@ -19,9 +19,7 @@ include_directories(include)
 # Add subdirectory for the source files
 add_subdirectory(src)
 
-# Add subdirectory for the external libraries
-add_subdirectory(externals/emhash)
-add_subdirectory(externals/robin-hood-hashing)
+
 
 # Add executable
 add_executable(AlfaPang main.cpp)
