@@ -33,7 +33,7 @@ void write_gfa(const std::vector<std::pair<T1, T1>> &labels,
       int right = abs(path[i + 1]);
 
       output << "L\t" << left << "\t" << sign_left << "\t" << right << "\t"
-             << sign_right << "\tOM\n";
+             << sign_right << "\t0M\n";
     }
   }
 
