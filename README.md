@@ -21,7 +21,7 @@ To run the program, use the following command format:
 **Note**: The value of k must be an odd integer.
 
 
-##Example
+## Example
 Download example data with following command:
 
 ```bash
