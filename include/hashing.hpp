@@ -1,9 +1,8 @@
 #ifndef HASHING_IMPL_HPP
 #define HASHING_IMPL_HPP
 
-#include "../externals/emhash/hash_table8.hpp"
 #include "../externals/ntHash/include/nthash/nthash.hpp"
-#include "../externals/unordered_dense/include/ankerl/unordered_dense.h"
+#include <ankerl/unordered_dense.h>
 #include "sequence_utils.h"
 #include <iostream>
 #include <string>
