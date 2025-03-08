@@ -138,18 +138,4 @@ void get_kmers_pos(const std::vector<T> &kmers_vec,
     used[kmer]++;
  }
 }
-
-
-
-void filter(const std::vector<std::vector<int>> &kmers_pos_map,
-            std::vector<int> &kmers_vec, int max_occ) {
-  for (auto positions : kmers_pos_map) {
-    if (positions.size() > max_occ) {
-      for (auto pos : positions) {
-        kmers_vec[pos] = 0;
-      }
-    }
-  }
-}
-
 #endif // HASHING_IMPL_HPP
