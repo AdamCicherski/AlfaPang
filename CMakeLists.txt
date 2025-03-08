@@ -1,29 +1,46 @@
 cmake_minimum_required(VERSION 3.10)
 project(AlfaPang)
 
-# Set C++ standard
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+add_compile_options(-march=native -mavx2)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add directories for includes and sources
+
 include_directories(include)
+include_directories(${CMAKE_SOURCE_DIR}/externals/unordered_dense/include)
+# Build ntHash
+set(NTHASH_DIR ${CMAKE_SOURCE_DIR}/externals/ntHash)
+set(NTHASH_BUILD_DIR ${NTHASH_DIR}/build)
+set(NTHASH_INSTALL_DIR ${NTHASH_DIR}/install)
 
-# Add subdirectory for the source files
-add_subdirectory(src)
+# command to build ntHash using Meson
+add_custom_target(build_nthash
+    COMMAND meson setup --buildtype=release --prefix=${NTHASH_INSTALL_DIR} ${NTHASH_BUILD_DIR}
+    COMMAND meson install -C ${NTHASH_BUILD_DIR}
+    WORKING_DIRECTORY ${NTHASH_DIR}
+    COMMENT "Building ntHash with Meson..."
+)
+
+include_directories(${NTHASH_INSTALL_DIR}/include)
+link_directories(${NTHASH_INSTALL_DIR}/lib)
+add_library(HashDefinitions src/hash_definitions.cpp)
+add_library(FastaUtils src/fasta_utils.cpp)
+add_library(SequenceUtils src/sequence_utils.cpp)
 
 
 
-# Add executable
 add_executable(AlfaPang main.cpp)
+target_link_libraries(AlfaPang PRIVATE HashDefinitions FastaUtils SequenceUtils nthash)
 
-# Link the libraries
-target_link_libraries(AlfaPang PRIVATE HashDefinitions FastaUtils SequenceUtils Hashing BFS GFAWriter GetStates ProcessBlock CollapsePaths)
+
+add_dependencies(AlfaPang build_nthash)
 
