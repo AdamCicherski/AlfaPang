@@ -1,5 +1,5 @@
 #include "sequence_utils.h"
-#include <algorithm>
+#include <array>
 
 void translate_sequence(std::string &sequence) {
   const std::unordered_map<char, char> translation_table{
@@ -8,7 +8,6 @@ void translate_sequence(std::string &sequence) {
       {'a', 'A'}, {'c', 'C'}, {'t', 'T'}, {'g', 'G'}, {'n', 'N'},
       {'h', 'N'}, {'d', 'N'}, {'k', 'N'}, {'m', 'N'}, {'r', 'N'},
       {'s', 'N'}, {'w', 'N'}, {'y', 'N'}, {'v', 'N'}, {'b', 'N'}};
-
   for (char &c : sequence) {
     auto it = translation_table.find(c);
     if (it != translation_table.end()) {
@@ -17,88 +16,42 @@ void translate_sequence(std::string &sequence) {
   }
 }
 
-std::string get_reversed_strand(const std::string_view &s) {
-  static const char complement[] = {'T', 'G', 'A', 'C', 'N', '$'};
-  std::string out;
-  out.reserve(s.size());
+std::string get_reversed_strand(const std::string_view &seq) {
+  static char complement[256] = {0}; // Static array initialized only once
 
-  for (char i : s) {
-    int index;
-    switch (i) {
-    case 'A':
-      index = 0;
-      break;
-    case 'C':
-      index = 1;
-      break;
-    case 'T':
-      index = 2;
-      break;
-    case 'G':
-      index = 3;
-      break;
-    case 'N':
-      index = 4;
-      break;
-    case '$':
-      index = 5;
-      break;
-    }
-    out += complement[index];
+  if (complement['A'] == 0) {
+    complement['A'] = 'T';
+    complement['T'] = 'A';
+    complement['C'] = 'G';
+    complement['G'] = 'C';
+    complement['N'] = 'N';
+    complement['$'] = '$';
   }
 
-  std::reverse(out.begin(), out.end());
-  return out;
+  size_t n = seq.size();
+  std::string rev_comp(n, ' ');
+  size_t i = 0;
+  for (; i < n; i++) {
+    rev_comp[n - 1 - i] = complement[(unsigned char)seq[i]];
+  }
+  return rev_comp;
 }
 
 char base_hash(std::string s) {
-  char i;
-  char j;
-  switch (s[0]) {
-  case 'A':
-    i = 0;
-    break;
-  case 'C':
-    i = 1;
-    break;
-  case 'T':
-    i = 2;
-    break;
-  case 'G':
-    i = 3;
-    break;
-  case 'N':
-    i = 4;
-    break;
-  case '$':
-    i = 5;
-    break;
-  case 'X':
-    i = 6;
-    break;
-  }
-  switch (s[1]) {
-  case 'A':
-    j = 0;
-    break;
-  case 'C':
-    j = 1;
-    break;
-  case 'T':
-    j = 2;
-    break;
-  case 'G':
-    j = 3;
-    break;
-  case 'N':
-    j = 4;
-    break;
-  case '$':
-    j = 5;
-    break;
-  case 'X':
-    j = 6;
-    break;
-  }
+  static constexpr std::array<char, 256> lookup = [] {
+    std::array<char, 256> table = {};
+    table['A'] = 0;
+    table['C'] = 1;
+    table['T'] = 2;
+    table['G'] = 3;
+    table['N'] = 4;
+    table['$'] = 5;
+    table['X'] = 6;
+    return table;
+  }();
+
+  char i = lookup[static_cast<unsigned char>(s[0])];
+  char j = lookup[static_cast<unsigned char>(s[1])];
+
   return 7 * i + j + 1;
 }
