@@ -4,3 +4,6 @@
 [submodule "externals/ntHash"]
 	path = externals/ntHash
 	url = https://github.com/bcgsc/ntHash
+[submodule "externals/unordered_dense"]
+	path = externals/unordered_dense
+	url = https://github.com/martinus/unordered_dense
