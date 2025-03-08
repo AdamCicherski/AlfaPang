@@ -7,12 +7,12 @@
 #include "hashing.h"
 #include "process_block.h"
 #include "sequence_utils.h"
+#include <climits>
 #include <iostream>
+#include <limits>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <climits>
-#include <limits>
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     std::cerr << "Usage: " << argv[0] << " <input_fasta> <output_gfa> <k>\n";
@@ -30,7 +30,8 @@ int main(int argc, char *argv[]) {
   translate_sequence(sequences);
 
   long total_length = sequences.size();
-  std::cout << "Total length of sequences: " << total_length << "\n";
+  std::cout << "Total length of sequences: " << total_length - names.size() - 1
+            << "\n";
 
   if (total_length < INT_MAX) {
     int total_length = sequences.size();
@@ -38,21 +39,26 @@ int main(int argc, char *argv[]) {
     std::vector<int> kmers_vec(total_length, 0);
     int kmers_number;
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
+
+    std::vector<int> kmers_occ(kmers_number, 0);
+    std::cout << "Counting k-mers occurrences" << std::endl;
+    get_kmers_occ(kmers_vec, kmers_occ);
+    cumulative_sum(kmers_occ);
     std::cout << "Building reversed index..." << std::endl;
-    std::vector<std::vector<int>> kmers_pos(kmers_number);
-    get_kmers_pos(kmers_vec, kmers_pos);
+    std::vector<int> kmers_pos(sequences.size(), 0);
+    get_kmers_pos(kmers_vec, kmers_occ, kmers_pos);
+
     std::cout << "Starting BFS..." << std::endl;
     std::vector<int> choped(total_length, 0);
     int choped_nodes_number = 1;
-    find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
+    find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
                        choped_nodes_number);
-    kmers_vec.clear();
-    for (auto v : kmers_pos) {
-      v.clear();
-    }
-    kmers_pos.clear();
-    std::cout << choped_nodes_number << std::endl;
+    kmers_vec = std::vector<int>();
+    kmers_pos = std::vector<int>();
+
+    std::cout << "Choped nodes number: " << choped_nodes_number << std::endl;
     std::cout << "Compacting unbranching paths..." << std::endl;
+
     std::vector<char> states(choped_nodes_number, 0);
     get_states(choped, sequences, states);
     std::vector<std::vector<int>> paths;
@@ -65,27 +71,29 @@ int main(int argc, char *argv[]) {
     write_gfa(labels, paths, output_file, sequences, names);
 
   } else {
-    std::cout << "[Info] Using 64 bits ints for k-mers id";
+    std::cout << "[Info] Using 64 bits ints for k-mers id\n";
     std::cout << "Hashing k-mers..." << std::endl;
     std::vector<long> kmers_vec(total_length, 0);
     long kmers_number;
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
-    std::cout << "Building reversed index" << std::endl;
-    std::vector<std::vector<long>> kmers_pos(kmers_number);
-    get_kmers_pos(kmers_vec, kmers_pos);
+    std::vector<long> kmers_occ(kmers_number, 0);
+    std::cout << "Counting k-mers occurrences" << std::endl;
+    get_kmers_occ(kmers_vec, kmers_occ);
+    cumulative_sum(kmers_occ);
+    std::cout << "Building reversed index..." << std::endl;
+    std::vector<long> kmers_pos(sequences.size(), 0);
+    get_kmers_pos(kmers_vec, kmers_occ, kmers_pos);
 
     if (kmers_number < INT_MAX) {
       int kmers_number = kmers_number;
+      std::cout << "Starting BFS..." << std::endl;
       std::vector<int> choped(total_length, 0);
       int choped_nodes_number = 1;
-      std::cout << "Starting BFS..." << std::endl;
-      find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
+      find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
                          choped_nodes_number);
-      kmers_vec.clear();
-      for (auto v : kmers_pos) {
-        v.clear();
-      }
-      kmers_pos.clear();
+      kmers_vec = std::vector<long>();
+      kmers_pos = std::vector<long>();
+
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
@@ -100,15 +108,13 @@ int main(int argc, char *argv[]) {
       write_gfa(labels, paths, output_file, sequences, names);
     } else {
       std::vector<long> choped(total_length, 0);
-      long choped_nodes_number = 1;
       std::cout << "Starting BFS..." << std::endl;
-      find_connected_bfs(kmers_vec, sequences, kmers_pos, k, choped,
+      long choped_nodes_number = 1;
+      find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
                          choped_nodes_number);
-      kmers_vec.clear();
-      for (auto v : kmers_pos) {
-        v.clear();
-      }
-      kmers_pos.clear();
+      kmers_vec = std::vector<long>();
+      kmers_pos = std::vector<long>();
+
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
