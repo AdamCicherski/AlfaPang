@@ -1,6 +1,6 @@
-[submodule "externals/emhash"]
-	path = externals/emhash
-	url = https://github.com/ktprime/emhash
 [submodule "externals/robin-hood-hashing"]
 	path = externals/robin-hood-hashing
 	url = https://github.com/martinus/robin-hood-hashing
+[submodule "externals/ntHash"]
+	path = externals/ntHash
+	url = https://github.com/bcgsc/ntHash
