@@ -4,7 +4,7 @@
 #include "get_states.h"
 #include "gfa_writer.h"
 #include "hash_definitions.h"
-#include "hashing.h"
+#include "hashing.hpp"
 #include "process_block.h"
 #include "sequence_utils.h"
 #include <climits>
