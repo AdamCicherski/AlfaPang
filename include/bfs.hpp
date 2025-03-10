@@ -1,7 +1,7 @@
 #ifndef BFS_IMPL_HPP
 #define BFS_IMPL_HPP
 
-// #include "bfs.h"
+#include <string>
 #include <queue>
 #include <vector>
 
