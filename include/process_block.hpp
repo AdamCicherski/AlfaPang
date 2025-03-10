@@ -1,6 +1,10 @@
 #ifndef PROCESS_BLOCK_IMPL_HPP
 #define PROCESS_BLOCK_IMPL_HPP
 
+#include "../externals/robin-hood-hashing/src/include/robin_hood.h"
+#include <string>
+#include <vector>
+
 template <typename T1, typename T2>
 void process_block(
     robin_hood::unordered_node_map<robin_hood::pair<T2, T2>, T2> &nodes_id,

@@ -1,11 +1,11 @@
 #include "bfs.hpp"
-#include "collapse_paths.h"
+#include "collapse_paths.hpp"
 #include "fasta_utils.h"
 #include "get_states.h"
 #include "gfa_writer.h"
 #include "hash_definitions.h"
 #include "hashing.hpp"
-#include "process_block.h"
+#include "process_block.hpp"
 #include "sequence_utils.h"
 #include <climits>
 #include <iostream>

@@ -1,6 +1,11 @@
 #ifndef COLLAPSE_PATHS_IMPL_HPP
 #define COLLAPSE_PATHS_IMPL_HPP
 
+#include "../externals/robin-hood-hashing/src/include/robin_hood.h"
+#include "process_block.hpp"
+#include <string>
+#include <vector>
+
 template <typename T1, typename T2>
 void collapse_paths(const std::vector<char> &states,
                     const std::vector<T2> &transformed,
