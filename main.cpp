@@ -1,17 +1,15 @@
 #include "bfs.hpp"
 #include "collapse_paths.hpp"
 #include "fasta_utils.h"
-#include "get_states.h"
-#include "gfa_writer.h"
+#include "get_states.hpp"
+#include "gfa_writer.hpp"
 #include "hash_definitions.h"
 #include "hashing.hpp"
 #include "process_block.hpp"
 #include "sequence_utils.h"
 #include <climits>
 #include <iostream>
-#include <limits>
 #include <string>
-#include <unordered_map>
 #include <vector>
 int main(int argc, char *argv[]) {
   if (argc != 4) {
