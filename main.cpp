@@ -3,7 +3,7 @@
 #include "fasta_utils.h"
 #include "get_states.hpp"
 #include "gfa_writer.hpp"
-#include "hash_definitions.h"
+#include "hash_definitions.hpp"
 #include "hashing.hpp"
 #include "process_block.hpp"
 #include "sequence_utils.h"

@@ -1,6 +1,3 @@
-add_library(HashDefinitions hash_definitions.cpp)
-target_include_directories(HashDefinitions PRIVATE ../include)
-
 add_library(FastaUtils fasta_utils.cpp)
 target_include_directories(FastaUtils PRIVATE ../include)
 
@@ -24,4 +21,8 @@ target_include_directories(ProcessBlock INTERFACE ../include)
 
 add_library(CollapsePaths INTERFACE)
 target_include_directories(CollapsePaths INTERFACE ../include)
+
+add_library(HashDefinitions INTERFACE)
+target_include_directories(HashDefinitions INTERFACE ../include)
+
 

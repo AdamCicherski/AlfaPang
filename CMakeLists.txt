@@ -32,14 +32,13 @@ add_custom_target(build_nthash
 
 include_directories(${NTHASH_INSTALL_DIR}/include)
 link_directories(${NTHASH_INSTALL_DIR}/lib)
-add_library(HashDefinitions src/hash_definitions.cpp)
 add_library(FastaUtils src/fasta_utils.cpp)
 add_library(SequenceUtils src/sequence_utils.cpp)
 
 
 
 add_executable(AlfaPang main.cpp)
-target_link_libraries(AlfaPang PRIVATE HashDefinitions FastaUtils SequenceUtils nthash)
+target_link_libraries(AlfaPang PRIVATE FastaUtils SequenceUtils nthash)
 
 
 add_dependencies(AlfaPang build_nthash)
