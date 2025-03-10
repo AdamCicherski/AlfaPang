@@ -1,8 +1,9 @@
 #ifndef GFA_WRITER_IMPL_HPP
 #define GFA_WRITER_IMPL_HPP
 
-#include "gfa_writer.h"
 #include <fstream>
+#include <string>
+#include <vector>
 
 template <typename T1, typename T2>
 void write_gfa(const std::vector<std::pair<T1, T1>> &labels,
