@@ -1,6 +1,10 @@
 #ifndef GET_STATES_IMPL_HPP
 #define GET_STATES_IMPL_HPP
 
+#include "sequence_utils.h"
+#include <string>
+#include <vector>
+
 template <typename T>
 void get_states(const std::vector<T> &choped, const std::string &sequence,
                 std::vector<char> &states) {
