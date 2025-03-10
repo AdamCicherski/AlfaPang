@@ -1,4 +1,4 @@
-#include "bfs.h"
+#include "bfs.hpp"
 #include "collapse_paths.h"
 #include "fasta_utils.h"
 #include "get_states.h"
