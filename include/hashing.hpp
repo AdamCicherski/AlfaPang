@@ -2,8 +2,8 @@
 #define HASHING_IMPL_HPP
 
 #include "../externals/ntHash/include/nthash/nthash.hpp"
-#include <ankerl/unordered_dense.h>
 #include "sequence_utils.h"
+#include <ankerl/unordered_dense.h>
 #include <iostream>
 #include <string>
 
@@ -12,21 +12,21 @@ struct custom_key {
   const size_t hval;
 };
 
-class KmerHash2 {
+class KmerHash {
 
   size_t k;
 
 public:
   using is_avalanching = void;
-  explicit KmerHash2(size_t k) : k(k) {}
+  explicit KmerHash(size_t k) : k(k) {}
   size_t operator()(const custom_key key) const { return key.hval; }
 };
 
-class KmerEqual2 {
+class KmerEqual {
   size_t k;
 
 public:
-  explicit KmerEqual2(size_t k) : k(k) {}
+  explicit KmerEqual(size_t k) : k(k) {}
 
   bool operator()(custom_key ka, custom_key kb) const {
     // if (ka.hval != kb.hval) {
@@ -51,14 +51,13 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
   bool arr[256] = {0};
   arr[36] = 1;
 
-  const unsigned num_hashes = 1;
   int shift = 0;
   const char *start = &sequence[1];
   nthash::BlindNtHash blind(start, 1, k, 0);
-  auto kmer_hash = KmerHash2(k);
-  auto kmer_equal = KmerEqual2(k);
+  auto kmer_hash = KmerHash(k);
+  auto kmer_equal = KmerEqual(k);
   auto kmers_dict =
-      ankerl::unordered_dense::map<const custom_key, T, KmerHash2, KmerEqual2>(
+      ankerl::unordered_dense::map<const custom_key, T, KmerHash, KmerEqual>(
           0, kmer_hash, kmer_equal);
   c = 1;
   size_t h;
@@ -68,7 +67,7 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
     h = blind.hashes()[0];
     custom_key key = {kmer_ptr, h};
     std::string kmer(kmer_ptr, k);
-
+    // Skip kmers with '$' sign
     if (arr[sequence[i + k - 1]] == 1) {
       shift = k - 1;
       blind.roll(sequence[i + k]);
@@ -106,7 +105,6 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
   std::cout << kmers_dict.size() << "\n";
 };
 
-
 template <typename T>
 void get_kmers_occ(const std::vector<T> &kmers_vec, std::vector<T> &kmers_occ) {
   for (size_t i = 0; i < kmers_vec.size(); i++) {
@@ -124,8 +122,8 @@ template <typename T> void cumulative_sum(std::vector<T> &vec) {
 
 template <typename T>
 void get_kmers_pos(const std::vector<T> &kmers_vec,
-                       const std::vector<T> &kmers_occ,
-                       std::vector<T> &kmer_pos_map) {
+                   const std::vector<T> &kmers_occ,
+                   std::vector<T> &kmer_pos_map) {
   std::vector<T> used(kmers_occ.size(), 0);
   std::cout << kmer_pos_map.size() << "\n";
   for (size_t i = 0; i < kmers_vec.size(); i++) {
@@ -135,6 +133,6 @@ void get_kmers_pos(const std::vector<T> &kmers_vec,
     }
     kmer_pos_map[kmers_occ[kmer - 1] + used[kmer]] = i;
     used[kmer]++;
- }
+  }
 }
 #endif // HASHING_IMPL_HPP
