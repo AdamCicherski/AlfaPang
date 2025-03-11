@@ -43,16 +43,16 @@ int main(int argc, char *argv[]) {
     get_kmers_occ(kmers_vec, kmers_occ);
     cumulative_sum(kmers_occ);
     std::cout << "Building reversed index..." << std::endl;
-    std::vector<int> kmers_pos(sequences.size(), 0);
-    get_kmers_pos(kmers_vec, kmers_occ, kmers_pos);
+    std::vector<int> reversed_index(sequences.size(), 0);
+    get_reversed_index(kmers_vec, kmers_occ, reversed_index);
 
     std::cout << "Starting BFS..." << std::endl;
     std::vector<int> choped(total_length, 0);
     int choped_nodes_number = 1;
-    find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
+    find_connected_bfs(kmers_vec, sequences, reversed_index, kmers_occ, k, choped,
                        choped_nodes_number);
     kmers_vec = std::vector<int>();
-    kmers_pos = std::vector<int>();
+    reversed_index = std::vector<int>();
 
     std::cout << "Choped nodes number: " << choped_nodes_number << std::endl;
     std::cout << "Compacting unbranching paths..." << std::endl;
@@ -79,18 +79,18 @@ int main(int argc, char *argv[]) {
     get_kmers_occ(kmers_vec, kmers_occ);
     cumulative_sum(kmers_occ);
     std::cout << "Building reversed index..." << std::endl;
-    std::vector<long> kmers_pos(sequences.size(), 0);
-    get_kmers_pos(kmers_vec, kmers_occ, kmers_pos);
+    std::vector<long> reversed_index(sequences.size(), 0);
+    get_reversed_index(kmers_vec, kmers_occ, reversed_index);
 
     if (kmers_number < INT_MAX) {
       int kmers_number = kmers_number;
       std::cout << "Starting BFS..." << std::endl;
       std::vector<int> choped(total_length, 0);
       int choped_nodes_number = 1;
-      find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
+      find_connected_bfs(kmers_vec, sequences, reversed_index, kmers_occ, k, choped,
                          choped_nodes_number);
       kmers_vec = std::vector<long>();
-      kmers_pos = std::vector<long>();
+      reversed_index = std::vector<long>();
 
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;
@@ -108,10 +108,10 @@ int main(int argc, char *argv[]) {
       std::vector<long> choped(total_length, 0);
       std::cout << "Starting BFS..." << std::endl;
       long choped_nodes_number = 1;
-      find_connected_bfs(kmers_vec, sequences, kmers_pos, kmers_occ, k, choped,
+      find_connected_bfs(kmers_vec, sequences, reversed_index, kmers_occ, k, choped,
                          choped_nodes_number);
       kmers_vec = std::vector<long>();
-      kmers_pos = std::vector<long>();
+      reversed_index = std::vector<long>();
 
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;

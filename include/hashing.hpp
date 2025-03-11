@@ -121,7 +121,7 @@ template <typename T> void cumulative_sum(std::vector<T> &vec) {
 }
 
 template <typename T>
-void get_kmers_pos(const std::vector<T> &kmers_vec,
+void get_reversed_index(const std::vector<T> &kmers_vec,
                    const std::vector<T> &kmers_occ,
                    std::vector<T> &kmer_pos_map) {
   std::vector<T> used(kmers_occ.size(), 0);
