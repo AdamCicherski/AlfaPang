@@ -1,8 +1,8 @@
 #ifndef BFS_IMPL_HPP
 #define BFS_IMPL_HPP
 
-#include <string>
 #include <queue>
+#include <string>
 #include <vector>
 
 // Norbert's trick + one vector
@@ -14,7 +14,7 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
                         std::vector<T2> &visited_nodes, T2 &v) {
   // needs a variable for bits shift depending on template
   int shift = sizeof(T1) * 8 - 1;
-  for (T1 j = 0; j < sequence.size(); j++) {
+  for (size_t j = 0; j < sequence.size(); j++) {
     if (visited_nodes[j] != 0 || sequence[j] == '$') {
       continue;
     }
@@ -32,18 +32,21 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
           }
 
           auto kmer_index = abs(kmer);
-          auto c = reversed_index[kmers_occ[kmer_index - 1]];
-          auto new_edge =
-              c + ((kmer ^ kmers_vec[c]) < 0) * (k - 1) +
-              (1 | (kmer >> shift)) * (1 | (kmers_vec[c] >> shift)) * i;
-          if (pos == new_edge) {
-            for (size_t occ = kmers_occ[kmer_index - 1];
-                 occ < kmers_occ[kmer_index]; occ++) {
-              auto map = reversed_index[occ];
+          auto kmer_first_occ = reversed_index[kmers_occ[kmer_index - 1]];
+          auto canonical_node =
+              kmer_first_occ +
+              ((kmer ^ kmers_vec[kmer_first_occ]) < 0) * (k - 1) +
+              (1 | (kmer >> shift)) *
+                  (1 | (kmers_vec[kmer_first_occ] >> shift)) * i;
+          if (pos == canonical_node) {
+            for (size_t occ_idx = kmers_occ[kmer_index - 1];
+                 occ_idx < kmers_occ[kmer_index]; occ_idx++) {
+              auto occ = reversed_index[occ_idx];
 
-              auto new_pos =
-                  map + ((kmer ^ kmers_vec[map]) < 0) * (k - 1) +
-                  (1 | (kmer >> shift)) * (1 | (kmers_vec[map] >> shift)) * i;
+              auto new_pos = occ +
+                             ((kmer ^ kmers_vec[occ]) < 0) * (k - 1) +
+                             (1 | (kmer >> shift)) *
+                                 (1 | (kmers_vec[occ] >> shift)) * i;
               if (visited_nodes[new_pos] != 0) {
                 continue;
               } else {
@@ -54,13 +57,13 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
               }
             }
           } else {
-            if (visited_nodes[new_edge]) {
+            if (visited_nodes[canonical_node]) {
               continue;
             }
-            queue.push(new_edge);
-            visited_nodes[new_edge] =
-                (sequence[new_edge] == sequence[j]) * v +
-                (sequence[new_edge] != sequence[j]) * (-v);
+            queue.push(canonical_node);
+            visited_nodes[canonical_node] =
+                (sequence[canonical_node] == sequence[j]) * v +
+                (sequence[canonical_node] != sequence[j]) * (-v);
           }
         } else [[unlikely]] {
           break;
