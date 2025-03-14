@@ -48,6 +48,6 @@ For this purpose, we provide the script `kmer_fractions.sh`, which uses the disk
 ```bash
 ./AlfaPang/scripts/kmer_fractions.sh -i <input_fasta_file> -o <output_dir_name> -k <min_k_value> -K <max_k_value> -s <step> 
 ```
-
+**Note**: If KMC executable path in your system is different than `${HOME}/kmc/bin/kmc` modify script variable `KMC_PATH`. 
 
 
