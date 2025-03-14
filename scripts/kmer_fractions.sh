@@ -1,5 +1,13 @@
 #!/bin/bash
 
+KMC_PATH="${HOME}/kmc/bin/kmc"
+if [ ! -x $KMC_PATH ]; then
+   echo "Error: ${KMC_PATH} does not exist"
+  exit 1
+
+fi
+
+
 # Initialize variables for arguments
 input_fasta=""
 output_name=""
@@ -48,7 +56,6 @@ echo "Maximum k value: $max_k"
 echo "Step:" $step
 # Your script logic here
 
-KMC_PATH="${HOME}/kmc/bin/kmc"
 
 KMC_DB=${output_name}/$(basename ${input_fasta%%.fa})_kmc
 KMC_TMP=${output_name}/kmc_tmp 
