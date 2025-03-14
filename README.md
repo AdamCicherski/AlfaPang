@@ -41,7 +41,13 @@ smoothxg -g ecoli50_ap.gfa -r 50 -V -o ecoli50_ap_smooth.gfa
 gfaffix ecoli50_ap_smoth.gfa -o ecoli50_final.gfa
 ```
 
+## Parameter k choice
+We suggest choosing parameter \( k \) based on the fraction of rare \( k \)-mers (those occurring only once in the \( k \)-mer spectrum). In our tests, a value of \( k \) yielding around 5% rare \( k \)-mers results in a reasonable graph structure.  
 
+For this purpose, we provide the script `kmer_fractions.sh`, which uses the disk-based \( k \)-mer counter [KMC](https://github.com/refresh-bio/KMC). The script produces a `.tsv` file with the fraction of rare \( k \)-mers calculated for a given \( k \) range.
+```bash
+./AlfaPang/scripts/kmers_fraction.sh -i <input_fasta_file> -o <output_dir_name> -k <min_k_value> -K <max_k_value> -s <step> 
+```
 
 
 
