@@ -8,7 +8,7 @@
 #include <string>
 
 struct custom_key {
-  const char *ptr;
+  const long pos; // trzeba template bo może być long
   const size_t hval;
 };
 
@@ -24,23 +24,26 @@ public:
 
 class KmerEqual {
   size_t k;
+  const char *sequence;
 
 public:
-  explicit KmerEqual(size_t k) : k(k) {}
+  explicit KmerEqual(size_t k, const char *ptr) : k(k), sequence(ptr) {}
 
-  bool operator()(custom_key ka, custom_key kb) const {
-    // if (ka.hval != kb.hval) {
-    //   return 0;
-    // }
-    std::string kmer_a(ka.ptr, k);
-    std::string rev_comp_a = get_reversed_strand(kmer_a);
-    std::string canonical_a = std::min(kmer_a, rev_comp_a);
+  bool operator()(const custom_key &ka, const custom_key &kb) const {
+    std::string kmer_a;
+    std::string kmer_b;
+    if (ka.pos >= 0) {
+      kmer_a = std::string_view(sequence + ka.pos, k);
+    } else {
+      kmer_a = get_reversed_strand(std::string_view(sequence + (-ka.pos), k));
+    }
 
-    std::string kmer_b(kb.ptr, k);
-    std::string rev_comp_b = get_reversed_strand(kmer_b);
-    std::string canonical_b = std::min(kmer_b, rev_comp_b);
-
-    return canonical_a == canonical_b;
+    if (kb.pos >= 0) {
+      kmer_b = std::string_view(sequence + kb.pos, k);
+    } else {
+      kmer_b = get_reversed_strand(std::string_view(sequence + (-kb.pos), k));
+    }
+    return kmer_a == kmer_b;
   }
 };
 
@@ -48,14 +51,13 @@ template <typename T>
 void hash_sequences(const std::string &sequence, int k, T total_length,
                     std::vector<T> &out, T &c) {
 
-  bool arr[256] = {0};
-  arr[36] = 1;
-
   int shift = 0;
   const char *start = &sequence[1];
+  const char *seq_ptr = sequence.data();
   nthash::BlindNtHash blind(start, 1, k, 0);
+
   auto kmer_hash = KmerHash(k);
-  auto kmer_equal = KmerEqual(k);
+  auto kmer_equal = KmerEqual(k, seq_ptr);
   auto kmers_dict =
       ankerl::unordered_dense::map<const custom_key, T, KmerHash, KmerEqual>(
           0, kmer_hash, kmer_equal);
@@ -65,10 +67,11 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
   for (T i = 1; i < sequence.length() - k; i++) {
     const char *kmer_ptr = &sequence[i];
     h = blind.hashes()[0];
-    custom_key key = {kmer_ptr, h};
-    std::string kmer(kmer_ptr, k);
-    // Skip kmers with '$' sign
-    if (arr[sequence[i + k - 1]] == 1) {
+    T pos = i * (blind.get_forward_hash() >= blind.get_reverse_hash()) -
+            i * (blind.get_forward_hash() < blind.get_reverse_hash());
+    custom_key key = {pos, h};
+    //  Skip kmers with '$' sign.
+    if (sequence[i + k - 1] == '$') {
       shift = k - 1;
       blind.roll(sequence[i + k]);
 
@@ -77,13 +80,11 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
     if (shift > 0) {
       shift--;
       blind.roll(sequence[i + k]);
-
       continue;
     }
 
-    const std::string reversed = get_reversed_strand(kmer);
     auto it = kmers_dict.find(key);
-    if (reversed > kmer) {
+    if (pos > 0) {
       if (it != kmers_dict.end()) {
         out[i] = it->second;
       } else {
@@ -102,8 +103,10 @@ void hash_sequences(const std::string &sequence, int k, T total_length,
     }
     blind.roll(sequence[i + k]);
   }
-  std::cout << kmers_dict.size() << "\n";
+  std::cout <<"Number of canonical k-mers: " <<kmers_dict.size() << "\n";
 };
+
+
 
 template <typename T>
 void get_kmers_occ(const std::vector<T> &kmers_vec, std::vector<T> &kmers_occ) {
