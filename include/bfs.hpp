@@ -14,18 +14,19 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
                         std::vector<T2> &visited_nodes, T2 &v) {
   // needs a variable for bits shift depending on template
   int shift = sizeof(T1) * 8 - 1;
-  for (size_t j = 0; j < sequence.size(); j++) {
+  size_t n = sequence.size();
+  for (size_t j = 0; j < n; j++) {
     if (visited_nodes[j] != 0 || sequence[j] == '$') {
       continue;
     }
     std::queue<T1> queue;
     queue.push(j);
-    visited_nodes[j] = v; // potrzebne dla filtra
+    visited_nodes[j] = v;
     while (!queue.empty()) {
       auto pos = queue.front();
       queue.pop();
       for (int i = 0; i < k; i++) {
-        if (pos - i >= 0) [[likely]] {
+        if (pos >= i) [[likely]] {
           auto kmer = kmers_vec[pos - i];
           if (kmer == 0) {
             continue;
@@ -34,8 +35,7 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
           auto kmer_index = abs(kmer);
           auto kmer_first_occ = reversed_index[kmers_occ[kmer_index - 1]];
           auto canonical_node =
-              kmer_first_occ +
-              ((kmer ^ kmers_vec[kmer_first_occ]) < 0) * (k - 1) +
+              kmer_first_occ + (kmer != kmers_vec[kmer_first_occ]) * (k - 1) +
               (1 | (kmer >> shift)) *
                   (1 | (kmers_vec[kmer_first_occ] >> shift)) * i;
           if (pos == canonical_node) {
@@ -43,10 +43,9 @@ void find_connected_bfs(const std::vector<T1> &kmers_vec,
                  occ_idx < kmers_occ[kmer_index]; occ_idx++) {
               auto occ = reversed_index[occ_idx];
 
-              auto new_pos = occ +
-                             ((kmer ^ kmers_vec[occ]) < 0) * (k - 1) +
-                             (1 | (kmer >> shift)) *
-                                 (1 | (kmers_vec[occ] >> shift)) * i;
+              auto new_pos =
+                  occ + (kmer != kmers_vec[occ]) * (k - 1) +
+                  (1 | (kmer >> shift)) * (1 | (kmers_vec[occ] >> shift)) * i;
               if (visited_nodes[new_pos] != 0) {
                 continue;
               } else {
