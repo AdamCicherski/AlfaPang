@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Choped nodes number: " << choped_nodes_number << std::endl;
     std::cout << "Compacting unbranching paths..." << std::endl;
 
-    std::vector<char> states(choped_nodes_number, 0);
+    std::vector<uint8_t> states(choped_nodes_number, 0);
     get_states(choped, sequences, states);
     std::vector<std::vector<int>> paths;
     std::vector<std::pair<int, int>> labels;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;
-      std::vector<char> states(choped_nodes_number, 0);
+      std::vector<uint8_t> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<int>> paths;
       std::vector<std::pair<long, long>> labels;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 
       std::cout << choped_nodes_number << std::endl;
       std::cout << "Compacting unbranched paths..." << std::endl;
-      std::vector<char> states(choped_nodes_number, 0);
+      std::vector<uint8_t> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<long>> paths;
       std::vector<std::pair<long, long>> labels;

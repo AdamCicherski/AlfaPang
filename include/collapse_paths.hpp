@@ -7,7 +7,7 @@
 #include <vector>
 
 template <typename T1, typename T2>
-void collapse_paths(const std::vector<char> &states,
+void collapse_paths(const std::vector<uint8_t> &states,
                     const std::vector<T2> &transformed,
                     const std::string &sequence,
                     std::vector<std::pair<T1, T1>> &nodes_labels,
