@@ -7,7 +7,7 @@
 
 template <typename T>
 void get_states(const std::vector<T> &choped, const std::string &sequence,
-                std::vector<char> &states) {
+                std::vector<uint8_t> &states) {
 
   for (size_t i = 0; i < choped.size(); i++) {
     if (choped[i] == 0) {
@@ -34,44 +34,51 @@ void get_states(const std::vector<T> &choped, const std::string &sequence,
         s[1] = 'X';
       }
     }
-    char state = base_hash(s);
-    if (states[abs(choped[i])] == 0) // Not visited yet\n",
-    {
-      states[abs(choped[i])] = state;
-    } else if (states[abs(choped[i])] == state) {
-      continue;
-    } else if (states[abs(choped[i])] == 49) {
-      continue;
-    }
+    uint8_t state = base_hash(s);
+    uint8_t new_l = state >> 3;
+    uint8_t new_r = state & 7;
+    auto node_id = abs(choped[i]);
+    uint8_t old_l = states[node_id] >> 3;
+    uint8_t old_r = states[node_id] & 7;
 
-    else if ((states[abs(choped[i])] - 1) / 7 != (state - 1) / 7 &&
-             states[abs(choped[i])] % 7 != state % 7) {
-      states[abs(choped[i])] = 49;
-    } else if ((states[abs(choped[i])] - 1) / 7 != (state - 1) / 7) {
-      states[abs(choped[i])] = base_hash(std::string() + 'X' + s[1]);
-    } else if (states[abs(choped[i])] % 7 != state % 7) {
-      states[abs(choped[i])] = base_hash(std::string() + s[0] + 'X');
+    if (states[node_id] == 0) // Not visited yet\n",
+    {
+      states[node_id] = state;
+    } else if (states[node_id] == state) {
+      continue;
+    } else if (states[node_id] == 63) {
+      continue;
+    } else if (old_l != new_l && old_r != new_r) {
+      states[node_id] = 63;
+    } else if (old_l != new_l) {
+      states[node_id] = base_hash(std::string() + 'X' + s[1]);
+    } else if (old_r != new_r) {
+      states[node_id] = base_hash(std::string() + s[0] + 'X');
     }
   }
-
+ constexpr uint8_t LUT[256] = {
+        // 
+        0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2,
+        0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2,
+        0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2,
+        0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 3,
+        // Remaining values default to 0
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    };
   for (size_t i = 1; i < states.size(); i++) {
-    if (states[i] == 49) // Many in and many out",
-    {
-      states[i] = 3;
-      // std::cout<<i<<std::endl;
-    } else if (states[i] % 7 == 0) // Many out",
-    {
-      // std::cout<<i<<std::endl;
-      states[i] = 2;
-      // std::cout<<2<<std::endl;
-    } else if ((states[i] - 1) / 7 == 6) // Many in",
-    {
-      states[i] = 1;
-    } else // Non branching",
-    {
-      states[i] = 0;
-    }
-  }
+     states[i]=LUT[states[i]];}
 }
+
 
 #endif // GET_STATES_IMPL_HPP

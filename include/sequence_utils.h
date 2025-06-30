@@ -7,7 +7,6 @@
 
 void translate_sequence(std::string &sequence);
 std::string get_reversed_strand(const std::string_view &s);
-char base_hash(std::string s);
+uint8_t base_hash(std::string s);
 
 #endif // SEQUENCE_UTILS_HPP
-

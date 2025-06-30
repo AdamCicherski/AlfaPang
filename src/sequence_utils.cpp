@@ -37,21 +37,23 @@ std::string get_reversed_strand(const std::string_view &seq) {
   return rev_comp;
 }
 
-char base_hash(std::string s) {
-  static constexpr std::array<char, 256> lookup = [] {
-    std::array<char, 256> table = {};
-    table['A'] = 0;
-    table['C'] = 1;
-    table['T'] = 2;
-    table['G'] = 3;
-    table['N'] = 4;
-    table['$'] = 5;
-    table['X'] = 6;
+uint8_t base_hash(std::string s) {
+  static constexpr std::array<uint8_t, 256> lookup = [] {
+    std::array<uint8_t, 256> table = {};
+    table['A'] = 1;
+    table['C'] = 2;
+    table['T'] = 3;
+    table['G'] = 4;
+    table['N'] = 5;
+    table['$'] = 6;
+    table['X'] = 7;
     return table;
   }();
 
-  char i = lookup[static_cast<unsigned char>(s[0])];
-  char j = lookup[static_cast<unsigned char>(s[1])];
+  uint8_t i = lookup[s[0]];
+  uint8_t j = lookup[s[1]];
 
-  return 7 * i + j + 1;
+  return i << 3 | j;
 }
+
+
