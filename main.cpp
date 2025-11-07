@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
   translate_sequence(sequences);
 
   long total_length = sequences.size();
-  std::cout << "Total length of sequences: " << total_length - names.size() - 1
-            << "\n";
+  //std::cout << "Total length of sequences: " << total_length - names.size() - 1
+  //          << "\n";
 
   if (total_length < INT_MAX) {
     int total_length = sequences.size();
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
 
     std::vector<int> kmers_occ(kmers_number, 0);
-    std::cout << "Counting k-mers occurrences" << std::endl;
+    std::cout << "Counting k-mers" << std::endl;
     get_kmers_occ(kmers_vec, kmers_occ);
     cumulative_sum(kmers_occ);
     std::cout << "Building reversed index..." << std::endl;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     kmers_vec = std::vector<int>();
     reversed_index = std::vector<int>();
 
-    std::cout << "Choped nodes number: " << choped_nodes_number << std::endl;
+    //std::cout << "Choped nodes number: " << choped_nodes_number << std::endl;
     std::cout << "Compacting unbranching paths..." << std::endl;
 
     std::vector<char> states(choped_nodes_number, 0);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     long kmers_number;
     hash_sequences(sequences, k, total_length, kmers_vec, kmers_number);
     std::vector<long> kmers_occ(kmers_number, 0);
-    std::cout << "Counting k-mers occurrences" << std::endl;
+    std::cout << "Counting k-mers" << std::endl;
     get_kmers_occ(kmers_vec, kmers_occ);
     cumulative_sum(kmers_occ);
     std::cout << "Building reversed index..." << std::endl;
@@ -92,8 +92,8 @@ int main(int argc, char *argv[]) {
       kmers_vec = std::vector<long>();
       reversed_index = std::vector<long>();
 
-      std::cout << choped_nodes_number << std::endl;
-      std::cout << "Compacting unbranched paths..." << std::endl;
+      //std::cout << choped_nodes_number << std::endl;
+      std::cout << "Compacting unbranching paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<int>> paths;
@@ -113,8 +113,8 @@ int main(int argc, char *argv[]) {
       kmers_vec = std::vector<long>();
       reversed_index = std::vector<long>();
 
-      std::cout << choped_nodes_number << std::endl;
-      std::cout << "Compacting unbranched paths..." << std::endl;
+      //std::cout << choped_nodes_number << std::endl;
+      std::cout << "Compacting unbranching paths..." << std::endl;
       std::vector<char> states(choped_nodes_number, 0);
       get_states(choped, sequences, states);
       std::vector<std::vector<long>> paths;
